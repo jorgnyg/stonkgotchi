@@ -1,0 +1,413 @@
+{
+	"info": {
+		"_postman_id": "5b5eb662-1b25-4f16-afc2-028f933ddaf1",
+		"name": "Nordnet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8388980"
+	},
+	"item": [
+		{
+			"name": "GET /own-capital",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br, zstd",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,en-GB;q=0.8",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Origin",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Priority",
+						"value": "u=1, i",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "https://www.nordnet.no/",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.prod.nntech.io/holdings/own-capital/v1/own-capital?accIds=1",
+					"protocol": "https",
+					"host": [
+						"api",
+						"prod",
+						"nntech",
+						"io"
+					],
+					"path": [
+						"holdings",
+						"own-capital",
+						"v1",
+						"own-capital"
+					],
+					"query": [
+						{
+							"key": "accIds",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /historical-returns",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br, zstd",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,en-GB;q=0.8",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Origin",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Priority",
+						"value": "u=1, i",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "https://www.nordnet.no/",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.prod.nntech.io/holdings/historical-returns/v1/own-capital/graph?accids=1&fromDate=2025-08-01&toDate=2025-08-02&startFromZero=false",
+					"protocol": "https",
+					"host": [
+						"api",
+						"prod",
+						"nntech",
+						"io"
+					],
+					"path": [
+						"holdings",
+						"historical-returns",
+						"v1",
+						"own-capital",
+						"graph"
+					],
+					"query": [
+						{
+							"key": "accids",
+							"value": "1"
+						},
+						{
+							"key": "fromDate",
+							"value": "2025-08-01"
+						},
+						{
+							"key": "toDate",
+							"value": "2025-08-02"
+						},
+						{
+							"key": "startFromZero",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /jwt/refresh",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the response body\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Check if 'jwt' exists in the response\r",
+							"if (response.jwt) {\r",
+							"    // Set the JWT as a global variable\r",
+							"    pm.globals.set(\"jwt_token\", response.jwt);\r",
+							"    console.log(\"JWT token set as global variable: jwt_token\");\r",
+							"} else {\r",
+							"    console.warn(\"JWT not found in response.\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					},
+					{
+						"key": "Client-Id",
+						"value": "NEXT",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "2",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "lang=nb; _csrf=_gm8zFrnz9ex_0f54XqNGtp8; consent_cookie=analytics%2Cfunctional%2Cmarketing%2Cnecessary; NNX_SESSION_ID=202e4a23-bf6e-4150-a915-a5ecf8433c37; NEXT=202e4a23-bf6e-4150-a915-a5ecf8433c37; nntheme=%7B%22a11y%22%3Afalse%2C%22dark%22%3A%22AUTO%22%2C%22osPref%22%3A%22DARK%22%7D",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{jwt_token}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Ntag",
+						"value": "994e5324-2c73-4de3-908d-faace85acd98",
+						"type": "text"
+					},
+					{
+						"key": "Origin",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Priority",
+						"value": "u=1, i",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua",
+						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua-Mobile",
+						"value": "?0",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua-Platform",
+						"value": "\"Windows\"",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetc-Mode",
+						"value": "cors",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-origin",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br, zstd",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-US,en;q=0.9,en-GB;q=0.8",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://www.nordnet.no/api/2/authentication/jwt/refresh",
+					"protocol": "https",
+					"host": [
+						"www",
+						"nordnet",
+						"no"
+					],
+					"path": [
+						"api",
+						"2",
+						"authentication",
+						"jwt",
+						"refresh"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /login",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					},
+					{
+						"key": "Client-Id",
+						"value": "NEXT",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "2",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "lang=nb; _csrf=_gm8zFrnz9ex_0f54XqNGtp8; consent_cookie=analytics%2Cfunctional%2Cmarketing%2Cnecessary; NNX_SESSION_ID=202e4a23-bf6e-4150-a915-a5ecf8433c37; NEXT=202e4a23-bf6e-4150-a915-a5ecf8433c37; nntheme=%7B%22a11y%22%3Afalse%2C%22dark%22%3A%22AUTO%22%2C%22osPref%22%3A%22DARK%22%7D",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Ntag",
+						"value": "994e5324-2c73-4de3-908d-faace85acd98",
+						"type": "text"
+					},
+					{
+						"key": "Origin",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Referer",
+						"value": "https://www.nordnet.no",
+						"type": "text"
+					},
+					{
+						"key": "Priority",
+						"value": "u=1, i",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua",
+						"value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Microsoft Edge\";v=\"138\"",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua-Mobile",
+						"value": "?0",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Ch-Ua-Platform",
+						"value": "\"Windows\"",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetch-Dest",
+						"value": "empty",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetc-Mode",
+						"value": "cors",
+						"type": "text"
+					},
+					{
+						"key": "Sec-Fetch-Site",
+						"value": "same-origin",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://www.nordnet.no/api/2/login",
+					"protocol": "https",
+					"host": [
+						"www",
+						"nordnet",
+						"no"
+					],
+					"path": [
+						"api",
+						"2",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
