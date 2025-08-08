@@ -1,12 +1,25 @@
 import hashlib
 import logging
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-import time
+#from display import draw_qr_code
+from playwright.sync_api import sync_playwright
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+def handle_response(response, context, state):
+    if response.request.method == "POST" and "nnx-session/login" in response.url:
+        logging.info(f"Login POST detected: {response.url}")
+        state["ntag"] = response.headers.get("ntag")
+
+        cookies = context.cookies()
+        state["NNX_SESSION_ID"] = next((c["value"] for c in cookies if c["name"] == "NNX_SESSION_ID"), None)
+        state["NEXT"] = next((c["value"] for c in cookies if c["name"] == "NEXT"), None)
+
+        logging.info(f"ntag: {state['ntag']}")
+        logging.info(f"NNX_SESSION_ID: {state['NNX_SESSION_ID']}")
+        logging.info(f"NEXT: {state['NEXT']}")
+
+        state["login_detected"] = True
 
 def save_svg(svg_content):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -26,66 +39,56 @@ def monitor_auth(poll_interval=5, max_wait=120):
         "NEXT": None
     }
 
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    driver = webdriver.Chrome(options=options)
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
 
-    driver.get("https://www.nordnet.no/login-next")
-    time.sleep(5)
+        page.on("response", lambda response: handle_response(response, context, state))
 
-    logging.info("Started monitoring...")
+        page.goto("https://www.nordnet.no/login-next", wait_until="networkidle")
+        page.wait_for_timeout(5000)
 
-    elapsed = 0
-    while not state["login_detected"] and elapsed < max_wait:
-        svg_elements = driver.find_elements(By.TAG_NAME, "svg")
-        if len(svg_elements) >= 3:
-            qr_svg = svg_elements[2]
-            svg_outer = qr_svg.get_attribute("outerHTML")
-            current_hash = hashlib.sha256(svg_outer.encode("utf-8")).hexdigest()
+        logging.info("Started monitoring...")
 
-            if current_hash != state["last_svg_hash"]:
-                path_elements = qr_svg.find_elements(By.TAG_NAME, "path")
-                svg_paths = path_elements[1].get_attribute("d") if len(path_elements) >= 2 else None
+        elapsed = 0
+        while not state["login_detected"] and elapsed < max_wait:
+            svg_elements = page.query_selector_all("svg")
+            if len(svg_elements) >= 3:
+                qr_svg = svg_elements[2]
+                svg_outer = qr_svg.evaluate("node => node.outerHTML")
+                current_hash = hashlib.sha256(svg_outer.encode("utf-8")).hexdigest()
 
-                print(svg_paths)
+                if current_hash != state["last_svg_hash"]:
+                    # save_svg(svg_outer) nnot in use
+                    # instead extract the d-value of the <path> element and set it to svg_paths
+                    path_elements = qr_svg.query_selector_all("path")
+                    svg_paths = path_elements[1].get_attribute("d") if len(path_elements) >= 2 else None
 
-                # draw_qr_code(svg_paths)
 
-                state["last_svg_hash"] = current_hash
+                    print(svg_paths)
+
+                    #draw_qr_code(svg_paths)
+
+                    state["last_svg_hash"] = current_hash
+                else:
+                    logging.info("QR code unchanged.")
             else:
-                logging.info("QR code unchanged.")
-        else:
-            logging.warning("Third SVG not found yet.")
+                logging.warning("Third SVG not found yet.")
 
-        # Check for login cookies
-        cookies = driver.get_cookies()
-        for cookie in cookies:
-            if cookie["name"] == "NNX_SESSION_ID":
-                state["NNX_SESSION_ID"] = cookie["value"]
-            elif cookie["name"] == "NEXT":
-                state["NEXT"] = cookie["value"]
+            page.wait_for_timeout(poll_interval * 1000)
+            elapsed += poll_interval
 
-        # Simulate detection of login by presence of session cookies
-        if state["NNX_SESSION_ID"] and state["NEXT"]:
-            state["login_detected"] = True
-            logging.info("Login detected via cookies.")
-            logging.info(f"NNX_SESSION_ID: {state['NNX_SESSION_ID']}")
-            logging.info(f"NEXT: {state['NEXT']}")
+        browser.close()
 
-        time.sleep(poll_interval)
-        elapsed += poll_interval
+        if not state["login_detected"]:
+            logging.warning("Login was not detected within timeout.")
 
-    driver.quit()
-
-    if not state["login_detected"]:
-        logging.warning("Login was not detected within timeout.")
-
-    return {
-        "ntag": state["ntag"],
-        "NNX_SESSION_ID": state["NNX_SESSION_ID"],
-        "NEXT": state["NEXT"]
-    }
+        return {
+            "ntag": state["ntag"],
+            "NNX_SESSION_ID": state["NNX_SESSION_ID"],
+            "NEXT": state["NEXT"]
+        }
 
 # Run the monitor
 if __name__ == "__main__":
