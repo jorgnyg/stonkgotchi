@@ -43,7 +43,7 @@ def save_svg(svg_content):
         f.write(html)
     logging.info(f"QR code saved to {filename}")
 
-def monitor_auth(poll_interval=5, max_wait=120):
+def monitor_auth(poll_interval=2, max_wait=120):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context()
