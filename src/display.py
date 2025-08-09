@@ -190,7 +190,7 @@ def draw_kaomoji(percentage_return):
         draw = ImageDraw.Draw(image)
 
         # Choose font and size
-        font_path = './font/DejaVuSans-Bold.ttf'  # adjust if needed
+        font_path = './font/DejaVuSansMono.ttf'  # adjust if needed
         font_size = 24  # tweak size to fit your display
         font = ImageFont.truetype(font_path, font_size)
 
