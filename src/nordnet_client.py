@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Union
 import requests
+from datetime import datetime
 import json
 
 class NordnetClient:
@@ -58,7 +59,16 @@ class NordnetClient:
             headers=headers
         )
 
-        print(res)    
+        def log_result(res):
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            log_entry = f"[{timestamp}] {res}\n"
+
+            with open("auth_log.txt", "a", encoding="utf-8") as f:
+                f.write(log_entry)
+
+            print("📝 Log entry added to auth_log.txt")
+
+        log_result(res)
         self._bearer_token = res.get("jwt")
     
     def _get_api_headers(self) -> Dict[str, str]:
