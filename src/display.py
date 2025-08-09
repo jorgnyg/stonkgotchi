@@ -170,6 +170,47 @@ def clear_qr_code():
     epd = epd2in13_V4.EPD()
     epd.Clear(0xFF)
 
+def draw_kaomoji():
+    try:
+        logging.info("epd2in13_V4 Demo - Kaomoji Display")
+        epd = epd2in13_V4.EPD()
+        logging.info("init and Clear")
+        epd.init()
+        epd.Clear(0xFF)
+
+        # Create blank image
+        image = Image.new('1', (epd.height, epd.width), 255)  # white background
+        draw = ImageDraw.Draw(image)
+
+        # Define kaomoji text
+        kaomoji = "٩(◕‿◕)۶"
+
+        # Choose font and size
+        font_path = './font/DejaVuSans-Bold.ttf'  # adjust if needed
+        font_size = 24  # tweak size to fit your display
+        font = ImageFont.truetype(font_path, font_size)
+
+        # Calculate position to center the kaomoji
+        text_width, text_height = draw.textsize(kaomoji, font=font)
+        x = (epd.height - text_width) // 2
+        y = (epd.width - text_height) // 2
+
+        # Draw the kaomoji
+        draw.text((x, y), kaomoji, font=font, fill=0)  # 0: black text
+
+        # Display the image
+        epd.display(epd.getbuffer(image))
+        logging.info("Kaomoji displayed successfully")
+
+        time.sleep(10)
+
+        logging.info("Clear...")
+        epd.init()
+        epd.Clear(0xFF)
+
+    except Exception as e:
+        logging.error(f"Error displaying kaomoji: {e}")
+
 def draw_qr_code(svg_paths):
     try:
         logging.info("epd2in13_V4 Demo - Vector Path Display")
@@ -220,3 +261,6 @@ def draw_qr_code(svg_paths):
         logging.info(f"Unexpected error: {e}")
         traceback.print_exc()
         epd2in13_V4.epdconfig.module_exit(cleanup=True)
+
+if __name__ == "__main__":
+    draw_kaomoji()
