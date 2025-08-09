@@ -38,4 +38,4 @@ if __name__ == "__main__":
         
         #client._refresh_bearer_token()
 
-        sleep(300) # refresh every 5 min
+        sleep(30) # refresh every 5 min
