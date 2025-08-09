@@ -193,14 +193,14 @@ def draw_qr_code(svg_paths):
 
         logging.info("Displaying image...")
         epd.display(epd.getbuffer(image))
-        time.sleep(10)
+        #time.sleep(10)
 
-        logging.info("Clear...")
-        epd.init()
-        epd.Clear(0xFF)
+        #logging.info("Clear...")
+        #epd.init()
+        #epd.Clear(0xFF)
 
-        logging.info("Goto Sleep...")
-        epd.sleep()
+        #logging.info("Goto Sleep...")
+        #epd.sleep()
 
     except IOError as e:
         logging.info(f"IO Error: {e}")

@@ -1,16 +1,38 @@
 import requests
 import time
+from datetime import datetime
+from display import draw_qr_code
 
-URL = "http://127.0.0.1:8000/get-auth-status"
-POLL_INTERVAL = 5  # seconds
+URL = "http://192.168.1.116:8321/get-auth-status"
+POLL_INTERVAL = 2  # seconds
 
-def draw_svg(svg_paths):
-    print("🎨 Drawing SVG paths:")
-    if isinstance(svg_paths, list):
-        for path in svg_paths:
-            print(f" - {path}")
-    else:
-        print(f" - {svg_paths}")
+def draw_svg_to_html(svg_paths):
+    print("Drawing SVG paths:")
+    print(svg_paths)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"qr_display_{timestamp}.html"
+
+    # Create a basic SVG container with the path
+    html_content = f"""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>QR Code Display</title>
+    </head>
+    <body>
+        <h2>QR Code SVG</h2>
+        <svg width="300" height="300" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="{svg_paths}" fill="black" />
+        </svg>
+    </body>
+    </html>
+    """
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(html_content)
+
+    print(f"✅ SVG written to {filename}")
 
 def poll_auth_status():
     last_svg_hash = None
@@ -26,16 +48,18 @@ def poll_auth_status():
             svg_hash = data.get("svg_hash")
 
             if svg_paths and svg_hash != last_svg_hash:
-                draw_svg(svg_paths)
+                #draw_svg_to_html(svg_paths)
+                draw_qr_code(svg_paths)
+
                 last_svg_hash = svg_hash
 
             print(f"Login detected: {login_detected}")
             if login_detected:
-                print("✅ Login detected. Stopping polling.")
+                print("Login detected. Pass tokens to nordnet client")
                 break
 
         except requests.RequestException as e:
-            print(f"⚠️ Request failed: {e}")
+            print(f"Request failed: {e}")
 
         time.sleep(POLL_INTERVAL)
 
