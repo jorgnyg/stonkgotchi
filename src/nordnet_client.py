@@ -132,3 +132,9 @@ class NordnetClient:
         response = self._make_request("GET", endpoint, headers=headers)
         print(response)
         return response
+    
+
+if __name__ == "__main__":
+    client = NordnetClient(next_token="cc848b60-9026-461b-bd06-d40bcab3bdb5", ntag="f5186571-3825-44bd-8133-983467f9cb8a")
+
+    client.get_historical_returns()

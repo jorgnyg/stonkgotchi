@@ -3,6 +3,7 @@ from nordnet_client import NordnetClient
 from datetime import datetime
 from time import sleep
 from poll_auth import poll_auth_status
+from display import draw_kaomoji
 
 if __name__ == "__main__":
     # ikke gi tokens og sånt direkte her, men heller starte init_auth som metode første gang man lager objektet?
@@ -19,6 +20,22 @@ if __name__ == "__main__":
         formatted = now.strftime("%Y-%m-%d %H:%M:%S")
         print(f"Iteration {i} - Trying to refresh token at {formatted}")
 
-        client._refresh_bearer_token()
+        result = client.get_historical_returns()
+
+            # Extract DAY_1 values
+        day_1 = next((p for p in result['periodReturns'] if p['period'] == 'DAY_1'), None)
+
+        if day_1:
+            monetary_value = day_1['monetaryReturn']['value']
+            percentage_return = day_1['percentageReturn']
+            print(f"DAY_1 Monetary Value: {monetary_value} NOK")
+            print(f"DAY_1 Percentage Return: {percentage_return}%")
+        else:
+            print("DAY_1 data not found.")
+            continue
+    
+        draw_kaomoji(percentage_return)
+        
+        #client._refresh_bearer_token()
 
         sleep(300) # refresh every 5 min

@@ -14,6 +14,8 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 import traceback
 import math
+from kaomojis import kaomojis
+import random
 
 # Turn into class instead?
 
@@ -168,9 +170,14 @@ def transform_and_draw(draw, polygons, img_w, img_h, margin=8):
 
 def clear_qr_code():
     epd = epd2in13_V4.EPD()
+    logging.info("Clear...")
+    epd.init()
     epd.Clear(0xFF)
 
-def draw_kaomoji():
+    logging.info("Goto Sleep...")
+    epd.sleep()
+
+def draw_kaomoji(percentage_return):
     try:
         logging.info("epd2in13_V4 Demo - Kaomoji Display")
         epd = epd2in13_V4.EPD()
@@ -182,27 +189,37 @@ def draw_kaomoji():
         image = Image.new('1', (epd.height, epd.width), 255)  # white background
         draw = ImageDraw.Draw(image)
 
-        # Define kaomoji text
-        kaomoji = "٩(◕‿◕)۶"
-
         # Choose font and size
         font_path = './font/DejaVuSans-Bold.ttf'  # adjust if needed
         font_size = 24  # tweak size to fit your display
         font = ImageFont.truetype(font_path, font_size)
 
+        # Select mood (should be function)
+        mood = "neutral" 
+        if percentage_return > 0.5:
+            mood = "happy"
+        elif percentage_return < -0.5:
+            mood = "sad"
+        else:
+            mood = "neutral"
+
+        kaomoji = random.choice(kaomojis[mood])
+
+        text_to_display = f"{percentage_return} {kaomoji}"
+
         # Calculate position to center the kaomoji
-        text_width, text_height = draw.textsize(kaomoji, font=font)
+        text_width, text_height = draw.textsize(text_to_display, font=font)
         x = (epd.height - text_width) // 2
         y = (epd.width - text_height) // 2
 
         # Draw the kaomoji
-        draw.text((x, y), kaomoji, font=font, fill=0)  # 0: black text
+        draw.text((x, y), text_to_display, font=font, fill=0)  # 0: black text
 
         # Display the image
         epd.display(epd.getbuffer(image))
         logging.info("Kaomoji displayed successfully")
 
-        time.sleep(10)
+        time.sleep(60)
 
         logging.info("Clear...")
         epd.init()
