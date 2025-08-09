@@ -6,8 +6,13 @@ Når login er ok, bruk token videre i requests
 
 Issue: QR-kode hos nordnet endrer seg hyppig. Kan bli delay mellom polling og visning osv. 
 
-docker build -t fastapi-playwright-scraper .
+docker build -t auth-api .
 
-docker run -p 8000:8000 fastapi-playwright-scraper
+docker run -d -p 8000:8000 auth-api
 
-curl http://192.168.1.152:8000/get-auth-status
+curl http://192.168.1.152:8000/get-auth-status  
+
+curl http://192.168.1.116:8321/get-auth-status    
+
+Pi zero (display)  
+ssh jorgnyg@192.168.1.86

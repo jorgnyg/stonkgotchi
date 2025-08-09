@@ -55,8 +55,8 @@ def poll_auth_status():
 
             print(f"Login detected: {login_detected}")
             if login_detected:
-                print("Login detected. Pass tokens to nordnet client")
-                break
+                print("Login detected. Returning response")
+                return data
 
         except requests.RequestException as e:
             print(f"Request failed: {e}")
