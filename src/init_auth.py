@@ -60,7 +60,7 @@ def monitor_auth(poll_interval=5, max_wait=120):
                 current_hash = hashlib.sha256(svg_outer.encode("utf-8")).hexdigest()
 
                 if current_hash != state["last_svg_hash"]:
-                    # save_svg(svg_outer) nnot in use
+                    save_svg(svg_outer)
                     # instead extract the d-value of the <path> element and set it to svg_paths
                     path_elements = qr_svg.query_selector_all("path")
                     svg_paths = path_elements[1].get_attribute("d") if len(path_elements) >= 2 else None

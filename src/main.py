@@ -4,9 +4,6 @@ from datetime import datetime
 from time import sleep
 from init_auth import monitor_auth
 
-
-
-
 if __name__ == "__main__":
     # ikke gi tokens og sånt direkte her, men heller starte init_auth som metode første gang man lager objektet?
     result = monitor_auth()
