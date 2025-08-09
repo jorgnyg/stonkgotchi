@@ -205,7 +205,8 @@ def draw_kaomoji(percentage_return):
 
         kaomoji = random.choice(kaomojis[mood])
 
-        text_to_display = f"{percentage_return} {kaomoji}"
+        formatted_return = f"{percentage_return:+.2f}"  # e.g. +1.23 or -0.76
+        text_to_display = f"{formatted_return}% {kaomoji}"
 
         # Calculate position to center the kaomoji
         text_width, text_height = draw.textsize(text_to_display, font=font)
@@ -219,7 +220,7 @@ def draw_kaomoji(percentage_return):
         epd.display(epd.getbuffer(image))
         logging.info("Kaomoji displayed successfully")
 
-        time.sleep(60)
+        time.sleep(10)
 
         logging.info("Clear...")
         epd.init()

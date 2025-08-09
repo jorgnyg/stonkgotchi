@@ -36,6 +36,4 @@ if __name__ == "__main__":
     
         draw_kaomoji(percentage_return)
         
-        #client._refresh_bearer_token()
-
-        sleep(30) # refresh every 5 min
+        sleep(10) # refresh every 5 min
