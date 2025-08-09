@@ -90,11 +90,11 @@ def start_monitor():
 
 start_monitor()
 
-# FastAPI endpoint
 @app.get("/get-auth-status")
 def get_auth_status():
     return {
         "svg_paths": state["svg_paths"],
+        "svg_hash": state["last_svg_hash"],
         "login_detected": state["login_detected"],
         "NNX_SESSION_ID": state["NNX_SESSION_ID"] if state["login_detected"] else None,
         "ntag": state["ntag"] if state["login_detected"] else None,
