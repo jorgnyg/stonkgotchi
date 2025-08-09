@@ -15,6 +15,8 @@ from PIL import Image, ImageDraw, ImageFont
 import traceback
 import math
 
+# Turn into class instead?
+
 logging.basicConfig(level=logging.DEBUG)
 
 def parse_svg_paths_to_polygons(paths):
@@ -163,6 +165,10 @@ def transform_and_draw(draw, polygons, img_w, img_h, margin=8):
         sp = [(int(round(x * scale + tx)), int(round(y * scale + ty))) for (x, y) in poly]
         # Draw filled polygon for each subpath
         draw.polygon(sp, fill=0)
+
+def clear_qr_code():
+    epd = epd2in13_V4.EPD()
+    epd.Clear(0xFF)
 
 def draw_qr_code(svg_paths):
     try:

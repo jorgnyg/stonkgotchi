@@ -1,7 +1,7 @@
 import requests
 import time
 from datetime import datetime
-from display import draw_qr_code
+from display import draw_qr_code, clear_qr_code
 
 URL = "http://192.168.1.116:8321/get-auth-status"
 POLL_INTERVAL = 2  # seconds
@@ -55,6 +55,7 @@ def poll_auth_status():
 
             print(f"Login detected: {login_detected}")
             if login_detected:
+                clear_qr_code()
                 print("Login detected. Returning response")
                 return data
 
